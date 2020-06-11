@@ -1,0 +1,41 @@
+
+.RootContainer{
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+
+.ImageContainer{
+    width: 50%;
+    height: 100vh;
+    display: inline-block;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+img{
+    height: 100%;
+    width: 100%;
+}
+
+.FormContainer{
+    width: 50%;
+    height: 100vh; 
+    text-align: center;
+    display: inline-block;
+    box-sizing: border-box;
+    vertical-align: middle;
+    background-color: #eee;
+}
+
+.LoginForm{
+    width: 80%;
+    border: 2px solid #eee;
+    /* box-shadow: 2px 2px 0px #757575; */
+    padding: 40px 20px;
+    box-sizing: border-box;
+    margin: 20vh auto;
+    text-align: center;
+    background-color: #d6d6d6;
+}
