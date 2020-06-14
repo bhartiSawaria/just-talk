@@ -5,11 +5,16 @@ import { Dropdown, Icon, Image } from 'semantic-ui-react';
 
 import classes from './UserPanel.module.css';
 import firebase from '../../../firebase';
+import Modal from '../../../components/UI/Modal/Modal';
+import AddChannel from '../../Channels/AddChannel/AddChannel';
+import Backdrop from '../../../components/UI/Backdrop/Backdrop';
+import * as actionCreators from '../../../actions/index';
 
 class UserPanel extends Component{
 
     state = {
-        user: null
+        user: null,
+        showModal: false
     }
 
     selectOptions = () => ([
@@ -45,6 +50,10 @@ class UserPanel extends Component{
             })
     }
 
+    addChannelHandler = () => {
+        this.props.showModalHandler();
+    }
+
     render(){
         let userName = null;
         let avatar = null;
@@ -52,20 +61,38 @@ class UserPanel extends Component{
             userName = this.state.user.displayName
             avatar = this.state.user.photoURL
         }
-        else{
-            console.log('State user', this.state.user);
-            console.log('Props user', this.props.user);
+
+        let modal = null;
+        console.log('the value of showmodal is: ', this.props.showModal);
+        if(this.props.showModal){
+            modal = (
+                <div>
+                    <Backdrop />
+                    <Modal>
+                        <AddChannel />
+                    </Modal>
+                </div>
+            )
         }
-        console.log('In render of UserPanel.js');
         return(
-            <div className={classes.RootContainer}> 
-                {/* <Icon name='user circle' size='big' /> */}
-                <Image src={avatar} avatar spaced='right'/>
-                <Dropdown 
-                    trigger={userName}
-                    options={this.selectOptions()} 
-                    style={{fontSize: '18px', marginLeft: '8px'}} />      
-            </div>
+            <React.Fragment>
+                {modal}
+                <div className={classes.RootContainer}> 
+                    {/* <Icon name='user circle' size='big' /> */}
+                    <div>
+                        <Image src={avatar} avatar spaced='right'/>
+                        <Dropdown 
+                            trigger={userName}
+                            options={this.selectOptions()} 
+                            style={{fontSize: '18px', marginLeft: '8px'}} /> 
+                    </div>     
+                    <div className={classes.Channel}>
+                        <Icon name='exchange'/>
+                        <div style={{display: 'inline-block', marginLeft: '8px', marginRight: '20px'}}>CHANNELS</div>
+                        <Icon name='add' onClick={this.addChannelHandler}/>
+                    </div>
+                </div>
+            </React.Fragment>
         )
     }
 }
@@ -73,9 +100,18 @@ class UserPanel extends Component{
 const mapStateToProps = (state) => {
     console.log('currrent user is', state.user);
     return {
-        user: state.user.currentUser
+        user: state.user.currentUser,
+        showModal: state.userInterface.showModal,
+        showBackdrop: state.userInterface.showBackdrop
     }
 }
 
-export default connect(mapStateToProps)(UserPanel);
+const mapDispatchToProps = (dispatch) => {
+    return{
+        showModalHandler: () => dispatch(actionCreators.showModal()),
+        showBackdropHandler: () => dispatch(actionCreators.showBackdrop())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserPanel);
 // export default UserPanel;

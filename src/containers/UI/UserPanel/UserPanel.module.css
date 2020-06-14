@@ -1,5 +1,12 @@
 
 .RootContainer{
+   /* height: 40%; */
    padding: 20px;
    margin: 20px 0px;
+   display: flex;
+   flex-direction: column;
+}
+
+.Channel{
+   margin: 16px 8px;
 }

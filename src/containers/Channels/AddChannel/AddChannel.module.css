@@ -1,0 +1,13 @@
+
+.RootContainer{
+    position: fixed;
+    z-index: 500;
+    top: 30vh;
+    left: 40vw;
+    width: 30vw;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 30px;
+    border: 2px solid #eee;
+    background-color: #ffffff;
+}

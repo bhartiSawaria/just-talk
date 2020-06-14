@@ -10,18 +10,14 @@ class SidePanel extends Component{
     render(){
         return(
             <div className={classes.RootContainer}>
-                <Grid>
-                    <Grid.Column>
-                        <Grid.Row>
-                            <Icon name='wechat' size='huge'/>
-                            <span className={classes.SiteName}>Just Talk</span>
-                            <hr />
-                        </Grid.Row>
-                        <Grid.Row>
-                            <UserPanel />
-                        </Grid.Row>
-                    </Grid.Column>
-                </Grid>
+                <div className={classes.ItemsContainer}>
+                    <div>
+                        <Icon name='wechat' size='huge'/>
+                        <span className={classes.SiteName}>Just Talk</span>
+                        <hr />
+                    </div>    
+                    <UserPanel />   
+                </div>
             </div>
         )
     }
