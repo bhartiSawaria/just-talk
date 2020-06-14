@@ -8,25 +8,32 @@ import Login from './Auth/Login/Login';
 import Layout from './Layout/Layout';
 import firebase from '../firebase';
 import * as actionCreators from '../actions/index';
+import Spinner from '../components/UI/Spinner';
 
 class App extends Component{
 
   componentDidMount(){
+    console.log('In componentDidMount of App.js');
+    
     firebase.auth().onAuthStateChanged( user => {
       if(user){
-        console.log('user', user);
+        console.log('Auth state changed', user);
         this.props.setUserHandler(user);
         this.props.history.push('/');
       }
+      else{
+        this.props.history.push('/signup');
+      }
     })
   }
+
   render(){
     return (
-        <Switch>
-          <Route path='/signup' component={Signup} />
-          <Route path='/login' component={Login} />
-          <Route path='/' component={Layout} />
-        </Switch>
+      <Switch>
+        <Route path='/signup' component={Signup} />
+        <Route path='/login' component={Login} />
+        <Route path='/' component={Layout} />
+      </Switch>
     )
   }
 };

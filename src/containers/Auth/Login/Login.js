@@ -1,11 +1,13 @@
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Form, Button, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 import classes from './Login.module.css';
 import sideImage from '../../../assets/Images/pic4.png';
 import firebase from '../../../firebase';
+import * as actionCreators from '../../../actions/index'; 
 
 class Login extends Component{
 
@@ -44,8 +46,9 @@ class Login extends Component{
                 .auth()
                 .signInWithEmailAndPassword(this.state.email, this.state.password)
                 .then(user => {
-                    console.log('User', user);
                     this.setState({loading: false });
+                    this.props.clearUser();
+                    this.props.history.push('/');
                 })
                 .catch(err => {
                     console.log(err);
@@ -63,7 +66,6 @@ class Login extends Component{
     }
 
     render(){
-
         return (
             <div className={classes.RootContainer}>
                 <div className={classes.ImageContainer}>
@@ -108,4 +110,10 @@ class Login extends Component{
     }
 };
 
-export default Login;
+const mapDispatchToProps = dispatch => {
+    return{
+        clearUser: () => dispatch(actionCreators.clearUser())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Login);

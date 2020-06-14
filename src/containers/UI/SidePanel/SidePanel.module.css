@@ -1,0 +1,18 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Slab:ital,wght@1,600&display=swap');
+
+.RootContainer{
+    width: 90%;
+    height: 100vh;
+    background-color: #000;
+    padding: 20px;
+    color: #ffffff;
+}
+
+.SiteName{
+    margin-left: 10px;
+    font-size: 25px;
+    font-family: 'Josefin Slab', serif;
+}
+

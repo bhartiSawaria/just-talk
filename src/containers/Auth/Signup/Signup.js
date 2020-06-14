@@ -26,8 +26,6 @@ class Signup extends Component{
     }
 
     isNameValid = () => {
-        console.log('length of name ', this.state.name.length);
-        console.log('length of name ', this.state.name.trim().length);
         return this.state.name.trim().length >= 3;
     }
 
@@ -80,7 +78,6 @@ class Signup extends Component{
                 .auth()
                 .createUserWithEmailAndPassword(this.state.email, this.state.password)
                 .then(createdUser => {
-                    console.log('created user',createdUser);
                     return createdUser.user.updateProfile({
                         displayName: this.state.name,
                         photoURL: GRAVATAR_BASEURL + md5(this.state.email) + "?d=identicon"
@@ -88,14 +85,12 @@ class Signup extends Component{
                 })
                 .then(() => {
                     const currentUser = firebase.auth().currentUser;
-                    console.log('current user', currentUser);
                     return firebase.database().ref('users').child(currentUser.uid).set({
                         name: currentUser.displayName,
                         avatar: currentUser.photoURL
                     })
                 })
-                .then(res => {
-                    console.log('after saving', res);
+                .then(() => {
                     this.setState({loading:false});
                 })
                 .catch(err => {
@@ -114,7 +109,6 @@ class Signup extends Component{
     }
 
     render(){
-
         return (
             <div className={classes.RootContainer}>
                 <div className={classes.ImageContainer}>

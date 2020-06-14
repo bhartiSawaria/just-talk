@@ -1,18 +1,26 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Grid } from 'semantic-ui-react';
 
-import firebase from '../../firebase';
 import Spinner from '../../components/UI/Spinner';
+import SidePanel from '../UI/SidePanel/SidePanel';
+import MessagePanel from '../UI/MessagePanel/MessagePanel';
+import * as actionCreators from '../../actions/index';
+
 
 class Layout extends Component{
 
-    componentDidMount(){
-        console.log(this.props);
-    }
-
     render(){
-        let layout = <div>Layout</div>;
+        console.log('In render of Layout.js');
+        let layout = <Grid>
+                        <Grid.Column width={4}>
+                            <SidePanel />
+                        </Grid.Column>
+                        <Grid.Column width={12}>
+                            <MessagePanel />
+                        </Grid.Column>
+                    </Grid>;
         if(this.props.loading){
             layout = <Spinner />
         }
@@ -30,4 +38,10 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Layout);
+const mapDispatchToProps = (dispatch) => {
+    return{
+      setUserHandler: (user) => dispatch(actionCreators.setUser(user))
+    }
+  }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);
