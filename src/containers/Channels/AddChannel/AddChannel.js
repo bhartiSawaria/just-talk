@@ -69,8 +69,10 @@ class AddChannel extends Component{
                         avatar: this.props.user.photoURL
                     }
                 })
-                .then(res => {
-                    console.log(res);
+                .then(() => {
+                    console.log('Channel added.');
+                    this.props.hideBackdrop();
+                    this.props.hideModal();
                 })
                 .catch(err => {
                     console.log(err);

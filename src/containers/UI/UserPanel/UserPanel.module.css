@@ -7,6 +7,20 @@
    flex-direction: column;
 }
 
-.Channel{
+.Channels{
    margin: 16px 8px;
+}
+
+.ChannelListContainer{
+   margin: 16px;
+}
+
+.Channel{
+   width: 100%;
+   padding: 8px 30px;
+   cursor: pointer;
+}
+
+.Active{
+   background-color: #424242;
 }

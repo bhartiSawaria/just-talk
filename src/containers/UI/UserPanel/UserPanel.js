@@ -14,7 +14,8 @@ class UserPanel extends Component{
 
     state = {
         user: null,
-        showModal: false
+        allChannels: [],
+        // activeChannelId: null
     }
 
     selectOptions = () => ([
@@ -34,9 +35,28 @@ class UserPanel extends Component{
     ])
 
     componentDidMount() {
-        console.log('In componentDidMount of UserPanel.js');
         this.setState({user: this.props.user})
+        firebase
+            .database()
+            .ref('channels')
+            .once('child_added', snap => {
+                console.log('snap value from once', snap.val());
+                this.props.onChannelClick(snap.val());
+                // this.setState({activeChannelId: snap.val().id});
+            })
+
+        firebase
+            .database()
+            .ref('channels')
+            .on('child_added', snap => {
+                console.log('snap value from on', snap.val());
+                this.setState({allChannels: this.state.allChannels.concat(snap.val())});
+            })
     }
+
+    componentWillUnmount() {
+        firebase.database().ref('channels').off();
+    } 
 
     signOutHandler = () => {
         firebase
@@ -54,6 +74,11 @@ class UserPanel extends Component{
         this.props.showModalHandler();
     }
 
+    channelClickHandler = (channel) => {
+        this.props.onChannelClick(channel);
+        // this.props.setChannel(channel);
+    }
+
     render(){
         let userName = null;
         let avatar = null;
@@ -62,8 +87,22 @@ class UserPanel extends Component{
             avatar = this.state.user.photoURL
         }
 
+        let channelList = null;
+        if( this.state.allChannels.length > 0 ){
+            channelList = (
+                this.state.allChannels.map((channel, index) => {
+                    const cssClass = [classes.Channel];
+                    if(this.props.currentChannel && this.props.currentChannel.id == channel.id){
+                        cssClass.push(classes.Active);
+                    }
+                    return (
+                        <div key={index} className={cssClass.join(' ')} onClick={() => this.channelClickHandler(channel)}>{channel.channelName}</div>
+                    )
+                })
+            )
+        }
+
         let modal = null;
-        console.log('the value of showmodal is: ', this.props.showModal);
         if(this.props.showModal){
             modal = (
                 <div>
@@ -86,11 +125,13 @@ class UserPanel extends Component{
                             options={this.selectOptions()} 
                             style={{fontSize: '18px', marginLeft: '8px'}} /> 
                     </div>     
-                    <div className={classes.Channel}>
+                    <div className={classes.Channels}>
                         <Icon name='exchange'/>
                         <div style={{display: 'inline-block', marginLeft: '8px', marginRight: '20px'}}>CHANNELS</div>
                         <Icon name='add' onClick={this.addChannelHandler}/>
+                        <div className={classes.ChannelListContainer}>{channelList}</div>
                     </div>
+                   
                 </div>
             </React.Fragment>
         )
@@ -102,14 +143,16 @@ const mapStateToProps = (state) => {
     return {
         user: state.user.currentUser,
         showModal: state.userInterface.showModal,
-        showBackdrop: state.userInterface.showBackdrop
+        showBackdrop: state.userInterface.showBackdrop,
+        currentChannel: state.channel.currentChannel
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return{
         showModalHandler: () => dispatch(actionCreators.showModal()),
-        showBackdropHandler: () => dispatch(actionCreators.showBackdrop())
+        showBackdropHandler: () => dispatch(actionCreators.showBackdrop()),
+        onChannelClick: (channel) => dispatch(actionCreators.setChannel(channel))
     }
 }
 
