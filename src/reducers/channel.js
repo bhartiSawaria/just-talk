@@ -8,6 +8,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch(action.type){
         case actionTypes.SET_CHANNEL:
+            console.log('Channel loaded', action.channel);
             return {
                 currentChannel: action.channel
             }

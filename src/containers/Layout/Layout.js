@@ -3,24 +3,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Grid } from 'semantic-ui-react';
 
+import classes from './Layout.module.css';
 import Spinner from '../../components/UI/Spinner';
 import SidePanel from '../UI/SidePanel/SidePanel';
-import MessagePanel from '../UI/MessagePanel/MessagePanel';
+import MainPanel from '../UI/MainPanel/MainPanel';
 import * as actionCreators from '../../actions/index';
-
 
 class Layout extends Component{
 
     render(){
-        console.log('In render of Layout.js');
-        let layout = <Grid>
-                        <Grid.Column width={4}>
-                            <SidePanel />
-                        </Grid.Column>
-                        <Grid.Column width={12}>
-                            <MessagePanel />
-                        </Grid.Column>
-                    </Grid>;
+        let layout = (
+            <div className={classes.RootContainer}>
+                <SidePanel />
+                <MainPanel />
+            </div>
+        )
         if(this.props.loading){
             layout = <Spinner />
         }

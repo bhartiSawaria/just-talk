@@ -1,0 +1,43 @@
+
+.RootContainer{
+    display: grid;
+    grid-template-columns: 15% auto;
+    grid-gap: 5px;
+    margin: 16px 0px;
+}
+
+.AvatarContainer{
+    height: 100%;
+    width: 100%;
+    max-width: 80px;
+    max-height: 75px;
+    padding-right: 8px;
+    border-right: 2px solid #eee;
+    box-sizing: border-box;
+}
+
+.UserAvatar{
+    height: 100%;
+    width: 100%;
+}
+
+.MessageInfoContainer{
+    padding-right: 10px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.MessageInfoContainer h1{
+    font-size: 20px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.MessageInfoContainer span{
+    font-style: italic;
+    color: grey;
+}
+
+.MessageInfoContainer p{
+    text-align: justify;
+}

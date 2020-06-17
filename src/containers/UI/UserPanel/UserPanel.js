@@ -40,16 +40,13 @@ class UserPanel extends Component{
             .database()
             .ref('channels')
             .once('child_added', snap => {
-                console.log('snap value from once', snap.val());
                 this.props.onChannelClick(snap.val());
-                // this.setState({activeChannelId: snap.val().id});
             })
 
         firebase
             .database()
             .ref('channels')
             .on('child_added', snap => {
-                console.log('snap value from on', snap.val());
                 this.setState({allChannels: this.state.allChannels.concat(snap.val())});
             })
     }
@@ -76,7 +73,6 @@ class UserPanel extends Component{
 
     channelClickHandler = (channel) => {
         this.props.onChannelClick(channel);
-        // this.props.setChannel(channel);
     }
 
     render(){
