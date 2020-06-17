@@ -8,3 +8,9 @@
     padding-top: 32px;
     margin-bottom: 16px;
 }
+
+@media(max-width: 500px) and (min-width: 100px) {
+    .RootContainer{
+        display: none;
+    }
+}

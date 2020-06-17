@@ -23,19 +23,35 @@ class MessagePanel extends Component{
         if (channel && user) {
           this.showMessagesListener(channel.id);
         }
-      }
+        
+    }
+
+    componentWillUnmount(){
+        this.state.messagesRef.off();
+    }
     
-      showMessagesListener = channelId => {
+    showMessagesListener = channelId => {
         this.setState({prevChannel: this.props.channel, isLoading: true});
-        let loadedMessages = [];
-        this.state.messagesRef.child(channelId).on("child_added", snap => {
-          loadedMessages.push(snap.val());
-          this.setState({
-            allMessages: loadedMessages,
-            isLoading: false
-          });
+        this.state.messagesRef.child(channelId).on("value", snap => {
+            let loadedMessages = [];
+            if (snap.exists()){
+                snap.forEach(s => {
+                    loadedMessages.push(s.val());
+                })
+                this.setState({
+                    allMessages: loadedMessages,
+                    isLoading: false
+                });
+            }
+            else{
+                console.log('Does not exist');
+                this.setState({
+                    allMessages: [],
+                    isLoading: false
+                })
+            }
         });
-      };
+    }
 
     inputChangeHandler = (event) => {
         this.setState({message: event.target.value});
@@ -56,7 +72,6 @@ class MessagePanel extends Component{
                 }
             })
             .then(() => {
-                // console.log(res);
                 this.setState({message: '', isLoading: false});
             })
             .catch(err => {
@@ -65,8 +80,13 @@ class MessagePanel extends Component{
             })
     }
 
+    // static getDerivedStateFromProps(props, state) {
+    //     console.log('In getDerivedStateFromProps ');
+    //     console.log('props', props, 'state', state)
+    //     return state;
+    // }
+
     render(){
-        // let prevChannel = null;
         if( this.state.prevChannel != this.props.channel ){
             this.showMessagesListener(this.props.channel.id);
         };
@@ -74,7 +94,8 @@ class MessagePanel extends Component{
         let messages = null;
         if(this.props.channel && this.props.channel.channelName){
             channelName = this.props.channel.channelName;
-                messages = this.state.allMessages.map(message => {
+            
+            messages = this.state.allMessages.map(message => {
                 return <Message key={message.timestamp} msg={message} />
             });
         }
@@ -123,3 +144,4 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps)(MessagePanel);
+

@@ -23,3 +23,8 @@
     font-family: 'Josefin Slab', serif;
 }
 
+@media(max-width: 500px) and (min-width: 100px) {
+    .RootContainer{
+        display: none;
+    }
+}

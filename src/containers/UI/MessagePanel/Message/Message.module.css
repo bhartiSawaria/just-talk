@@ -11,6 +11,8 @@
     width: 100%;
     max-width: 80px;
     max-height: 75px;
+    min-height: 55px;
+    min-width: 55px;
     padding-right: 8px;
     border-right: 2px solid #eee;
     box-sizing: border-box;
