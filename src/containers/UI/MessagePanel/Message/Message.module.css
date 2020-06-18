@@ -43,3 +43,14 @@
 .MessageInfoContainer p{
     text-align: justify;
 }
+
+.ImageContainer{
+    margin: 16px;
+    width: 70%;
+    height: 70%;
+}
+
+.ImageContainer img {
+    height: 100%;
+    width: 100%;
+}

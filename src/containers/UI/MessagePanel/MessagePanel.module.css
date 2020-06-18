@@ -38,3 +38,12 @@
     margin: 16px auto;
     box-sizing: border-box;
 }
+
+.ModalContainer{
+    z-index: 500;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 100vw;
+}

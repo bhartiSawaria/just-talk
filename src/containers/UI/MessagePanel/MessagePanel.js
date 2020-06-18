@@ -1,12 +1,17 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Search, Input } from 'semantic-ui-react';
+import { Button, Search, Input, Modal } from 'semantic-ui-react';
+import mime from 'mime-types';
+import { v4 as uuidv4 } from 'uuid';
 
 import classes from './MessagePanel.module.css';
 import firebase from '../../../firebase';
 import Message from './Message/Message';
 import Spinner from '../../../components/UI/Spinner';
+import ModalComponent from '../../../components/UI/Modal/Modal';
+import Backdrop from '../../../components/UI/Backdrop/Backdrop';
+import UploadMedia from './UploadMedia/UploadMedia';
 
 class MessagePanel extends Component{
     state = {
@@ -14,7 +19,9 @@ class MessagePanel extends Component{
         isLoading: true,
         allMessages: [],
         messagesRef: firebase.database().ref('messages'),
-        prevChannel: null
+        prevChannel: null,
+        showModal: false,
+        showBackdrop: false
     }
 
     componentDidMount() {
@@ -29,6 +36,14 @@ class MessagePanel extends Component{
     componentWillUnmount(){
         this.state.messagesRef.off();
     }
+
+    showModalHandler = () => this.setState({showModal: true});
+
+    hideModalHandler = () => this.setState({showModal: false});
+
+    showBackdropHandler = () => this.setState({showBackdrop: true});
+
+    hideBackdropHandler = () => this.setState({showBackdrop: false});
     
     showMessagesListener = channelId => {
         this.setState({prevChannel: this.props.channel, isLoading: true});
@@ -80,11 +95,15 @@ class MessagePanel extends Component{
             })
     }
 
-    // static getDerivedStateFromProps(props, state) {
-    //     console.log('In getDerivedStateFromProps ');
-    //     console.log('props', props, 'state', state)
-    //     return state;
-    // }
+    uploadMediaHandler = () => {
+        this.showModalHandler();
+        this.showBackdropHandler();
+    }
+
+    backdropClickHandler = () => {
+        this.hideBackdropHandler()
+        this.hideModalHandler();
+    }
 
     render(){
         if( this.state.prevChannel != this.props.channel ){
@@ -104,34 +123,55 @@ class MessagePanel extends Component{
             messages = <Spinner />
         }
 
+        let modal = null;
+        if( this.state.showModal ){
+            modal = (
+                <div className={classes.ModalContainer}>
+                    <Backdrop backdropClick={this.backdropClickHandler}/>
+                    <ModalComponent>
+                        <UploadMedia 
+                                hideBackdrop={this.hideBackdropHandler} 
+                                hideModal={this.hideModalHandler}
+                                channel={this.props.channel}
+                                user={this.props.user}/>
+                    </ModalComponent>
+                </div>
+            )
+        }
+
         return(
-            <div className={classes.RootContainer}>
-                <div className={classes.MessagesHeader}>
-                    <h1>{channelName}</h1>
-                    <Search placeholder='Search Messages'/>
-                </div>
-                <div className={classes.MessagesBody}>
-                    {messages}
-                </div>
-                <div className={classes.SendOptionsContainer}>
-                    <Input 
-                        fluid 
-                        type='text' 
-                        name='message' 
-                        placeholder='Type Message' 
-                        label='+'  
-                        value={this.state.message}
-                        onChange={(event) => this.inputChangeHandler(event)}/>
-                    <div className={classes.ButtonsContainer}>
-                        <Button 
-                            style={{width: "50%"}} 
-                            disabled={this.state.message.trim().length === 0}
-                            onClick={this.sendMessageHandler}
-                            loading={this.state.isLoading}>Send Message</Button>
-                        <Button style={{width: "50%"}}>Upload Media</Button>
+            <React.Fragment>
+                {modal}
+                <div className={classes.RootContainer}>
+                    <div className={classes.MessagesHeader}>
+                        <h1>{channelName}</h1>
+                        <Search placeholder='Search Messages'/>
+                    </div>
+                    <div className={classes.MessagesBody}>
+                        {messages}
+                    </div>
+                    <div className={classes.SendOptionsContainer}>
+                        <Input 
+                            fluid 
+                            type='text' 
+                            name='message' 
+                            placeholder='Type Message' 
+                            label='+'  
+                            value={this.state.message}
+                            onChange={(event) => this.inputChangeHandler(event)}/>
+                        <div className={classes.ButtonsContainer}>
+                            <Button 
+                                style={{width: "50%"}} 
+                                disabled={this.state.message.trim().length === 0}
+                                onClick={this.sendMessageHandler}
+                                loading={this.state.isLoading}>Send Message</Button>
+                            <Button 
+                                style={{width: "50%"}}
+                                onClick={this.uploadMediaHandler}>Upload Media</Button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </React.Fragment>
         )
     }
 }

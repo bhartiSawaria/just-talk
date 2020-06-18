@@ -15,6 +15,8 @@ class UserPanel extends Component{
     state = {
         user: null,
         allChannels: [],
+        showModal: false,
+        showBackdrop: false
         // activeChannelId: null
     }
 
@@ -68,11 +70,24 @@ class UserPanel extends Component{
     }
 
     addChannelHandler = () => {
-        this.props.showModalHandler();
+        this.setState({showModal: true, showBackdrop: true});
     }
 
     channelClickHandler = (channel) => {
         this.props.onChannelClick(channel);
+    }
+
+    showModalHandler = () => this.setState({showModal: true});
+
+    hideModalHandler = () => this.setState({showModal: false});
+
+    showBackdropHandler = () => this.setState({showBackdrop: true});
+
+    hideBackdropHandler = () => this.setState({showBackdrop: false});
+
+    backdropClickHandler = () => {
+        this.hideModalHandler();
+        this.hideBackdropHandler();
     }
 
     render(){
@@ -99,12 +114,14 @@ class UserPanel extends Component{
         }
 
         let modal = null;
-        if(this.props.showModal){
+        if(this.state.showModal){
             modal = (
                 <div>
-                    <Backdrop />
+                    <Backdrop backdropClick={this.backdropClickHandler}/>
                     <Modal>
-                        <AddChannel />
+                        <AddChannel 
+                            hideBackdrop={this.hideBackdropHandler} 
+                            hideModal={this.hideModalHandler}/>
                     </Modal>
                 </div>
             )
@@ -138,16 +155,12 @@ const mapStateToProps = (state) => {
     console.log('currrent user is', state.user);
     return {
         user: state.user.currentUser,
-        showModal: state.userInterface.showModal,
-        showBackdrop: state.userInterface.showBackdrop,
         currentChannel: state.channel.currentChannel
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return{
-        showModalHandler: () => dispatch(actionCreators.showModal()),
-        showBackdropHandler: () => dispatch(actionCreators.showBackdrop()),
         onChannelClick: (channel) => dispatch(actionCreators.setChannel(channel))
     }
 }

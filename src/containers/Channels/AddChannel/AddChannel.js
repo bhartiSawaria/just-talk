@@ -118,11 +118,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return{
-        hideModal: () => dispatch(actionCreators.hideModal()),
-        hideBackdrop: () => dispatch(actionCreators.hideBackdrop())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddChannel);
+export default connect(mapStateToProps)(AddChannel);
