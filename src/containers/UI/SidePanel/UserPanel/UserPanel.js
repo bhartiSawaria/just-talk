@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { Dropdown, Icon, Image } from 'semantic-ui-react';
 
 import classes from './UserPanel.module.css';
-import firebase from '../../../firebase';
-import Modal from '../../../components/UI/Modal/Modal';
-import AddChannel from '../../Channels/AddChannel/AddChannel';
-import Backdrop from '../../../components/UI/Backdrop/Backdrop';
-import * as actionCreators from '../../../actions/index';
+import firebase from '../../../../firebase';
+import Modal from '../../../../components/UI/Modal/Modal';
+import AddChannel from '../../../Channels/AddChannel/AddChannel';
+import Backdrop from '../../../../components/UI/Backdrop/Backdrop';
+import * as actionCreators from '../../../../actions/index';
 
 class UserPanel extends Component{
 
@@ -17,7 +17,6 @@ class UserPanel extends Component{
         allChannels: [],
         showModal: false,
         showBackdrop: false
-        // activeChannelId: null
     }
 
     selectOptions = () => ([
@@ -103,7 +102,7 @@ class UserPanel extends Component{
             channelList = (
                 this.state.allChannels.map((channel, index) => {
                     const cssClass = [classes.Channel];
-                    if(this.props.currentChannel && this.props.currentChannel.id == channel.id){
+                    if(this.props.currentChannel && this.props.currentChannel.id === channel.id){
                         cssClass.push(classes.Active);
                     }
                     return (
@@ -130,7 +129,6 @@ class UserPanel extends Component{
             <React.Fragment>
                 {modal}
                 <div className={classes.RootContainer}> 
-                    {/* <Icon name='user circle' size='big' /> */}
                     <div>
                         <Image src={avatar} avatar spaced='right'/>
                         <Dropdown 
@@ -151,19 +149,10 @@ class UserPanel extends Component{
     }
 }
 
-const mapStateToProps = (state) => {
-    console.log('currrent user is', state.user);
-    return {
-        user: state.user.currentUser,
-        currentChannel: state.channel.currentChannel
-    }
-}
-
 const mapDispatchToProps = (dispatch) => {
     return{
         onChannelClick: (channel) => dispatch(actionCreators.setChannel(channel))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserPanel);
-// export default UserPanel;
+export default connect(null, mapDispatchToProps)(UserPanel);

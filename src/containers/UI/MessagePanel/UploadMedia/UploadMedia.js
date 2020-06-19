@@ -27,7 +27,6 @@ class UploadMedia extends Component {
     }
 
     inputChangeHandler = (event) => {
-        console.log('value is', event.target.files[0]);
         const file = event.target.files[0];
         if(file){
             this.setState({file});
@@ -38,11 +37,13 @@ class UploadMedia extends Component {
     }
 
     uploadProceedHandler = (event) => {
-        const {file, storageRef, uploadTask, errors} = this.state;
+        const {file, storageRef, errors} = this.state;
+        const { channel, isPrivateChannel } = this.props;
         event.preventDefault();
         if(file && this.isFileTypeSupported(file.name)){
             console.log('Proceed to upload');
-            const filePath = `chat/public/${uuidv4()}.jpg`;
+            const temp = isPrivateChannel ? `private/${channel.id}` : 'public';
+            const filePath = `chat/${temp}/${uuidv4()}.jpg`;
             const metaData = {
                 contentType: mime.lookup(file.name)
             }
@@ -59,7 +60,6 @@ class UploadMedia extends Component {
                     this.setState({errors: errors.append(err), isLoading: false})
                 }, () => {
                     this.state.uploadTask.snapshot.ref.getDownloadURL().then(url => {
-                        console.log('Download url: ', url);
                         this.sendFileMessage(url)
                     })
                 })
@@ -71,9 +71,7 @@ class UploadMedia extends Component {
     }
 
     sendFileMessage = (imageUrl) => {
-        firebase
-            .database()
-            .ref('messages')
+        this.props.messagesRef
             .child(this.props.channel.id)
             .push()
             .set({

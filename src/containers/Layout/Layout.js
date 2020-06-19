@@ -1,21 +1,18 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Grid } from 'semantic-ui-react';
 
 import classes from './Layout.module.css';
 import Spinner from '../../components/UI/Spinner';
 import SidePanel from '../UI/SidePanel/SidePanel';
 import MainPanel from '../UI/MainPanel/MainPanel';
-import * as actionCreators from '../../actions/index';
 
 class Layout extends Component{
-
     render(){
         let layout = (
             <div className={classes.RootContainer}>
-                <SidePanel />
-                <MainPanel />
+                <SidePanel user={this.props.user} channel={this.props.channel} isPrivateChannel={this.props.isPrivateChannel}/>
+                <MainPanel user={this.props.user} channel={this.props.channel} isPrivateChannel={this.props.isPrivateChannel}/>
             </div>
         )
         if(this.props.loading){
@@ -31,14 +28,11 @@ class Layout extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        loading: state.user.isLoading
+        loading: state.user.isLoading,
+        user: state.user.currentUser,
+        channel: state.channel.currentChannel,
+        isPrivateChannel: state.channel.isPrivateChannel
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return{
-      setUserHandler: (user) => dispatch(actionCreators.setUser(user))
-    }
-  }
-
-export default connect(mapStateToProps, mapDispatchToProps)(Layout);
+export default connect(mapStateToProps)(Layout);

@@ -1,6 +1,5 @@
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import classes from './MainPanel.module.css';
 import MessagePanel from '../MessagePanel/MessagePanel';
@@ -14,7 +13,11 @@ class MainPanel extends Component {
         if(this.props.channel){
             contents = (
                 <div className={classes.RootContainer}>
-                    <MessagePanel channel={this.props.channel}/>
+                    <MessagePanel 
+                        key={this.props.channel && this.props.channel.id} 
+                        channel={this.props.channel} 
+                        isPrivateChannel={this.props.isPrivateChannel}
+                        user={this.props.user}/>
                     <MetaPanel />
                 </div>
             )
@@ -27,10 +30,5 @@ class MainPanel extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return{
-        channel: state.channel.currentChannel
-    }
-}
 
-export default connect(mapStateToProps)(MainPanel);
+export default MainPanel;

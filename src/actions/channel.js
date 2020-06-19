@@ -13,3 +13,10 @@ export const clearChannel = () => {
         type: actionTypes.CLEAR_CHANNEL
     }
 }
+
+export const setPrivateChannel = (channel) => {
+    return {
+        type: actionTypes.SET_PRIVATE_CHANNEL,
+        channel: channel
+    }
+}

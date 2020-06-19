@@ -1,12 +1,12 @@
 
 import React, { Component } from 'react';
-import { Grid, Icon } from 'semantic-ui-react';
+import { Icon } from 'semantic-ui-react';
 
 import classes from './SidePanel.module.css';
-import UserPanel from '../UserPanel/UserPanel';
+import UserPanel from './UserPanel/UserPanel';
+import DirectMessages from './DirectMessages/DirectMessages';
 
 class SidePanel extends Component{
-
     render(){
         return(
             <div className={classes.RootContainer}>
@@ -16,7 +16,8 @@ class SidePanel extends Component{
                         <span className={classes.SiteName}>Just Talk</span>
                         <hr />
                     </div>    
-                    <UserPanel />   
+                    <UserPanel user={this.props.user} channel={this.props.channel}/>  
+                    <DirectMessages user={this.props.user} channel={this.props.channel}/> 
                 </div>
             </div>
         )

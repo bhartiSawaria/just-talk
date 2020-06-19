@@ -1,0 +1,14 @@
+
+.RootContainer{
+    margin: 16px 16px;
+}
+
+.UsersContainer{
+    margin: 16px;
+}
+
+.User{
+    width: 100%;
+    padding: 8px 30px;
+    cursor: pointer;
+ }

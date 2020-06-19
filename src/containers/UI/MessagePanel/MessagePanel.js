@@ -1,9 +1,6 @@
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Button, Search, Input, Modal } from 'semantic-ui-react';
-import mime from 'mime-types';
-import { v4 as uuidv4 } from 'uuid';
+import { Button, Input } from 'semantic-ui-react';
 
 import classes from './MessagePanel.module.css';
 import firebase from '../../../firebase';
@@ -18,10 +15,11 @@ class MessagePanel extends Component{
         message: '',
         isLoading: true,
         allMessages: [],
-        messagesRef: firebase.database().ref('messages'),
-        prevChannel: null,
+        publicMessagesRef: firebase.database().ref('publicMessages'),
+        privateMessagesRef: firebase.database().ref('privateMessages'),
         showModal: false,
-        showBackdrop: false
+        showBackdrop: false,
+        searchKeyword: ''
     }
 
     componentDidMount() {
@@ -29,12 +27,19 @@ class MessagePanel extends Component{
     
         if (channel && user) {
           this.showMessagesListener(channel.id);
-        }
-        
+        }   
     }
 
     componentWillUnmount(){
-        this.state.messagesRef.off();
+        const ref = this.getMessagesRef();
+        ref.off();
+    }
+
+    getMessagesRef = () => {
+        if( this.props.isPrivateChannel ){
+            return this.state.privateMessagesRef;
+        }
+        return this.state.publicMessagesRef;
     }
 
     showModalHandler = () => this.setState({showModal: true});
@@ -46,8 +51,9 @@ class MessagePanel extends Component{
     hideBackdropHandler = () => this.setState({showBackdrop: false});
     
     showMessagesListener = channelId => {
-        this.setState({prevChannel: this.props.channel, isLoading: true});
-        this.state.messagesRef.child(channelId).on("value", snap => {
+        this.setState({ isLoading: true});
+        const ref = this.getMessagesRef();
+        ref.child(channelId).on("value", snap => {
             let loadedMessages = [];
             if (snap.exists()){
                 snap.forEach(s => {
@@ -74,8 +80,8 @@ class MessagePanel extends Component{
 
     sendMessageHandler = () => {
         this.setState({isLoading: true});
-        this.state.messagesRef
-            .child(this.props.channel.id)
+        const ref = this.getMessagesRef();
+        ref.child(this.props.channel.id)
             .push()
             .set({
                 content: this.state.message,
@@ -105,19 +111,29 @@ class MessagePanel extends Component{
         this.hideModalHandler();
     }
 
+    searchKeywordChangeHandler = (event) => {
+        const typedValue = event.target.value
+        this.setState({searchKeyword: typedValue});
+        const regrex = new RegExp(typedValue, 'gi');
+        const displayedMessages = [...this.state.allMessages];
+        const searchResults = displayedMessages.reduce((acc, msg) => {
+            if( msg.content && msg.content.match(regrex)){
+                acc.push(msg);
+            }
+            return acc;
+        }, []);
+        this.setState({allMessages: searchResults});
+    }
+
     render(){
-        if( this.state.prevChannel != this.props.channel ){
-            this.showMessagesListener(this.props.channel.id);
-        };
         let channelName = '...';
-        let messages = null;
         if(this.props.channel && this.props.channel.channelName){
             channelName = this.props.channel.channelName;
-            
-            messages = this.state.allMessages.map(message => {
-                return <Message key={message.timestamp} msg={message} />
-            });
         }
+        let messages = null;
+        messages = this.state.allMessages.map(message => {
+            return <Message key={message.timestamp} msg={message} />
+        });
 
         if(this.state.isLoading){
             messages = <Spinner />
@@ -133,7 +149,9 @@ class MessagePanel extends Component{
                                 hideBackdrop={this.hideBackdropHandler} 
                                 hideModal={this.hideModalHandler}
                                 channel={this.props.channel}
-                                user={this.props.user}/>
+                                isPrivateChannel={this.props.isPrivateChannel}
+                                user={this.props.user}
+                                messagesRef={this.getMessagesRef()}/>
                     </ModalComponent>
                 </div>
             )
@@ -145,7 +163,13 @@ class MessagePanel extends Component{
                 <div className={classes.RootContainer}>
                     <div className={classes.MessagesHeader}>
                         <h1>{channelName}</h1>
-                        <Search placeholder='Search Messages'/>
+                        <Input
+                            icon='search'
+                            type='text'
+                            name='searchMessage'
+                            placeholder='Search Message'
+                            value={this.state.searchKeyword}
+                            onChange={this.searchKeywordChangeHandler}/>
                     </div>
                     <div className={classes.MessagesBody}>
                         {messages}
@@ -176,12 +200,5 @@ class MessagePanel extends Component{
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        user: state.user.currentUser,
-        channel: state.channel.currentChannel
-    }
-}
-
-export default connect(mapStateToProps)(MessagePanel);
+export default MessagePanel;
 

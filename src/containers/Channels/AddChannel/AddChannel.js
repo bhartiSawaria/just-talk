@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Form, Header, Button } from 'semantic-ui-react';
 
 import classes from './AddChannel.module.css';
-import  * as actionCreators from '../../../actions/index';
 import firebase from '../../../firebase';
 
 class AddChannel extends Component{
@@ -92,7 +91,6 @@ class AddChannel extends Component{
     render(){
         let error = null;
         if( this.state.errors.length > 0 ){
-            const length = this.state.errors.length;
             error = (
                 <p style={{color: 'red'}}>{this.state.errors[0].message}</p>
             )
